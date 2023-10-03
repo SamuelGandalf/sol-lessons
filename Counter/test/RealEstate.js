@@ -18,14 +18,14 @@ describe("Real Estate", () => {
         //deploy the contracts
         realEstate = await RealEstate.deploy()
         escrow = await Escrow.deploy( 
-            realEstate.address,
+            realEstate.getAddress(),
             nftID,
-            seller.address,
-            buyer.address
+            seller.getAddress(),
+            buyer.getAddress()
         )
-
-        transaction = await realEstate.connect(seller).approve(escrow, nftID)
-        await transaction.await()
+            //seller approves the nft sale
+        transaction = await realEstate.connect(seller).approve(escrow.getAddress(), nftID)
+        await transaction.wait()
     })
 
     describe("Deployoyment", async () => {
@@ -36,12 +36,12 @@ describe("Real Estate", () => {
     })
 
     describe("Selling Real Estate", async () => {
-        it("executes a successful transaction", async () =>{
+        it("Executes a successful transaction", async () =>{
             //makes sure that the seller is the nft owner berfore the sel
             expect(await realEstate.ownerOf(nftID)).to.equal(seller.address)
 
             transaction = await escrow.connect(buyer).finalseSale()
-            await transaction.await()
+            await transaction.wait()
             console.log("Buyer finalised the sale")
 
             expect(await realEstate.ownerOf(nftID)).to.equal(buyer.address)
