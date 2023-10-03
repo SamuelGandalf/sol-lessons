@@ -64,6 +64,25 @@ describe("Real Estate", () => {
             balance = await escrow.getBalance()
             console.log("the escrow balance: ", ethers.formatEther(balance))
 
+            //Inspector status
+            transaction = await escrow.connect(inspector).updateInspectionStatus(true)
+            await transaction.wait()
+            console.log("Inspector updates status!")
+
+            //Approve the transaction
+            transaction = await escrow.connect(buyer).approveSale()
+            await transaction.wait()
+            console.log("the buyer approves the sale")
+
+            transaction = await escrow.connect(seller).approveSale()
+            await transaction.wait()
+            console.log("the seller approves the sale")
+
+            transaction = await escrow.connect(lender).approveSale()
+            await transaction.wait()
+            console.log(" the lender approves the transaction")
+
+            //Finalise the transaction
             transaction = await escrow.connect(buyer).finalseSale()
             await transaction.wait()
             console.log("Buyer finalised the sale")
