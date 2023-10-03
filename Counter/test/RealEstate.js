@@ -82,6 +82,10 @@ describe("Real Estate", () => {
             await transaction.wait()
             console.log(" the lender approves the transaction")
 
+            //Lender funds the sale
+            transaction = await lender.sendTransaction({to: escrow.address, value: ether(80)})
+
+
             //Finalise the transaction
             transaction = await escrow.connect(buyer).finalseSale()
             await transaction.wait()
@@ -89,6 +93,9 @@ describe("Real Estate", () => {
 
             expect(await realEstate.ownerOf(nftID)).to.equal(buyer.address)
 
+            balance = await ethers.provider.getBalance(seller.address);
+            console.log("Seller Balance: ", ethers.formatEther(balance))
+            expect(balance).to.be.above(ether(1099))
         })
     })
 })
