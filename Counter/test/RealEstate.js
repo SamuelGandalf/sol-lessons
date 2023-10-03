@@ -1,6 +1,10 @@
 const {ethers} = require("hardhat");
 const {expect} = require("chai");
 
+const tokens = (n) => {
+    return ethers.parseUnits(n.toString(), "ether")
+}
+const ether = tokens
 describe("Real Estate", () => {
     // depoly the contracts
     let realEstate, escrow
@@ -12,6 +16,8 @@ describe("Real Estate", () => {
         deployer = accounts[0]
         seller = deployer
         buyer = accounts[1]
+        inspector = accounts[2]
+        lender = accounts[3]
         // this gets / fetches the contract
         const RealEstate = await ethers.getContractFactory("RealEstate")
         const Escrow = await ethers.getContractFactory("Escrow")
@@ -20,8 +26,12 @@ describe("Real Estate", () => {
         escrow = await Escrow.deploy( 
             realEstate.getAddress(),
             nftID,
+            ether(100),
+            ether(20),
             seller.getAddress(),
-            buyer.getAddress()
+            buyer.getAddress(),
+            inspector.getAddress(),
+            lender.getAddress()
         )
             //seller approves the nft sale
         transaction = await realEstate.connect(seller).approve(escrow.getAddress(), nftID)
