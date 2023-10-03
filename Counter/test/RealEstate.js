@@ -10,6 +10,8 @@ describe("Real Estate", () => {
     let realEstate, escrow
     let deployer, seller
     let nftID = 1
+    let purchasePrice = ether(100)
+    let escrowAmount = ether(20)
     beforeEach( async  () => {
         //set up accounts
         accounts = await ethers.getSigners()
@@ -26,8 +28,8 @@ describe("Real Estate", () => {
         escrow = await Escrow.deploy( 
             realEstate.getAddress(),
             nftID,
-            ether(100),
-            ether(20),
+            purchasePrice,
+            escrowAmount,
             seller.getAddress(),
             buyer.getAddress(),
             inspector.getAddress(),
@@ -46,9 +48,21 @@ describe("Real Estate", () => {
     })
 
     describe("Selling Real Estate", async () => {
+        let transaction, balance
         it("Executes a successful transaction", async () =>{
             //makes sure that the seller is the nft owner berfore the sel
             expect(await realEstate.ownerOf(nftID)).to.equal(seller.address)
+
+            //escrow balance before buyer deposits earnest
+            balance = await escrow.getBalance()
+            console.log("escrow balance before earnest: ", ethers.formatEther(balance))
+
+            //the buyer deposits earnest
+            transaction = await escrow.connect(buyer).depositEarnest({value: ether(20)})
+            
+            //check the escrow balance after buyer deposites earnest
+            balance = await escrow.getBalance()
+            console.log("the escrow balance: ", ethers.formatEther(balance))
 
             transaction = await escrow.connect(buyer).finalseSale()
             await transaction.wait()

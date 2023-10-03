@@ -36,6 +36,20 @@ contract Escrow{
         inspector = _inspector;
         lender = _lender;
     }
+    modifier onlyBuyer() {
+        require(msg.sender == buyer, "Only Buyer can call this function");
+
+        _;
+    }
+
+    function depositEarnest() public payable onlyBuyer {
+        require(msg.value >= escrowAmount);
+        
+        
+    }
+    function getBalance()  public view returns(uint){
+        return address(this).balance;
+    }
 
     function finalseSale() public{
         IERC721(nftAddress).transferFrom(seller, buyer, nftID);
