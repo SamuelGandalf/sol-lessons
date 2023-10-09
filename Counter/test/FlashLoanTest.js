@@ -36,8 +36,8 @@ describe("FlashLoan",  () =>{
     })
 
     describe("Deployment", () =>{
-        it("Goood! works", ()=>{
-            expect(2+2).to.equal(4)
+        it("Sends tokens to the flash loan contract", async ()=>{
+            expect(await token.balanceOf(flashLoan.getAddress())).to.equal(tokens(1000000))
         })
     })
 })
