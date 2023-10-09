@@ -30,7 +30,9 @@ contract Escrow{
     bool public inspectionPassed = false; 
     mapping (address => bool) public approval;
 
-    receive() external payable{}
+    receive() external payable{
+        
+    }
 
     constructor(
      address _nftAddress,
